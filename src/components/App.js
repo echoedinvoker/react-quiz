@@ -7,6 +7,7 @@ import StartScreen from "./StartScreen"
 import Question from "./Question"
 import NextButton from "./NextButton"
 import Progress from "./Progress"
+import Finish from "./Finish"
 
 
 const initialState = {
@@ -45,6 +46,20 @@ function reduce(state, action) {
         status: "finished",
         highscore: state.points > state.highscore ? state.points : state.highscore
       }
+    case 'restart':
+      // return {
+      //   ...state,
+      //   status: 'active',
+      //   index: 0,
+      //   answer: null,
+      //   points: 0
+      // }
+      return {
+        ...initialState,
+        status: 'active',
+        highscore: state.highscore,
+        questions: state.questions
+      }
     default:
       throw new Error("Action unknown")
   }
@@ -54,7 +69,7 @@ export default function App() {
   const [{ questions, status, index, answer, points, highscore }, dispatch] = useReducer(reduce, initialState)
   const numQuestions = questions.length
   const sumQuestionsPoints = questions.reduce((prev, curr) => prev + curr.points, 0)
-  const percentage = (points / sumQuestionsPoints) * 100
+  // const percentage = (points / sumQuestionsPoints) * 100
   const isLastQuestion = index + 1 === numQuestions
 
   useEffect(function() {
@@ -84,13 +99,19 @@ export default function App() {
         }</NextButton>
       </>
       }
-      {status === 'finished' && (
-        <>
-          <p className="result">You scored {points} out of {sumQuestionsPoints} ({Math.ceil(percentage)}%)</p>
-          <p className="highscore">(Highscore: {highscore} points)</p>
-          <button className="btn btn-ui">Restart Quiz</button>
-        </>
-      )}
+      {status === 'finished' && <Finish points={points} sumQuestionsPoints={sumQuestionsPoints} highscore={highscore} dispatch={dispatch} />}
     </Main>
   </div>
 }
+
+// function Finish({ points, sumQuestionsPoints, highscore, dispatch }) {
+//   const percentage = (points / sumQuestionsPoints) * 100
+//   return (
+//     <>
+//       <p className="result">You scored {points} out of {sumQuestionsPoints} ({Math.ceil(percentage)}%)</p>
+//       <p className="highscore">(Highscore: {highscore} points)</p>
+//       <button className="btn btn-ui" onClick={() => dispatch({ type: 'restart' })}>Restart Quiz</button>
+//     </>
+//
+//   )
+// }
