@@ -1,4 +1,7 @@
-export default function Finish({ points, sumQuestionsPoints, highscore, dispatch }) {
+import { useQuiz } from "../contexts/QuizContext"
+
+export default function Finish() {
+  const { points, sumQuestionsPoints, highscore, dispatch } = useQuiz()
   const percentage = (points / sumQuestionsPoints) * 100
   return (
     <>
